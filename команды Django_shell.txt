@@ -1,0 +1,112 @@
+
+from NewsPortal.models import *  
+
+#1
+user1=User.objects.create_user('Первый пользователь')
+user2=User.objects.create_user('Второй пользователь')
+user3=User.objects.create_user('Третий пользователь')
+user4=User.objects.create_user('Четвертый пользователь')
+
+#2
+aut1 = Author.objects.create(a_username_id=User.objects.get(username="Первый пользователь").id)
+aut2 = Author.objects.create(a_username_id=User.objects.get(username="Третий пользователь").id)
+
+#3
+Category.objects.create(category="Спорт")
+Category.objects.create(category="Наука")
+Category.objects.create(category="Техника")
+Category.objects.create(category="Здоровье")
+
+#4
+post1 = Post.objects.create( p_author_id=Author.objects.get(a_username_id=User.objects.get(username="Первый пользователь").id).id, p_name="Телефон LG", p_post='Lineage OS — это операционная система с открытым исходным кодом, основанным на Android. Команда разработчиков ОС выпустила современную версию с функциями Android 13.Теперь стало известно, что выпущенный в 2017 году смартфон LG V30 получит официальную поддержку Lineage OS. То есть даже в 2023 году аппаратное обеспечение этой модели по-прежнему способно без проблем запускать операционку. Поддержка Lineage OS доступна для всех версий LG V30, включая разблокированные модели и модели для конкретных операторов. Об этом сообщает "Рамблер".')
+
+post2 = Post.objects.create( p_author_id=Author.objects.get(a_username_id=User.objects.get(username="Третий пользователь").id).id, p_name="Дыхательная гимнастика Стрельниковой: упражнения, эффективность, отзывы", p_post='Как появилась дыхательная гимнастика Стрельниковой.Автор методики — Александра Стрельникова — была оперной певицей и педагогом. Она использовала дыхательные упражнения, которые придумала вместе с матерью, чтобы разрабатывать голос и спасаться от приступов удушья (у женщины было больное сердце). «Будучи молодой певицей, я потеряла голос. И мама стала для меня искать способ его восстановить. Так постепенно была изобретена гимнастика», — рассказывала Александра.Первую заявку на патент нового метода дыхания подавала мать Стрельниковой — Александра Северовна — в 1941 году. Выдача авторского свидетельства на изобретение затянулась из-за войны. В итоге права на «Способ лечения болезней, связанных с потерей голоса» в 1972 году получила дочь [1]. Позднее журнал «Изобретатель и рационализатор» опубликовал статью о дыхательной гимнастике. На фотографиях к материалу комплекс Стрельниковой выполнял актер Андрей Миронов — упражнения быстро стали популярными.')
+
+post3 = Post.objects.create( p_author_id=Author.objects.get(a_username_id=User.objects.get(username="Первый пользователь").id).id, p_name="Новость спорта", p_post='Олимпийский чемпион легкоатлет Росс отстранен на три года за нарушения антидопинговых правил', p_type="News")
+
+#5
+PostCategory.objects.create(pc_post=post1, pc_category_id=Category.objects.get(category="Техника").id)
+PostCategory.objects.create(pc_post=post1, pc_category_id=Category.objects.get(category="Наука").id)
+PostCategory.objects.create(pc_post=post2, pc_category_id=Category.objects.get(category="Здоровье").id)
+PostCategory.objects.create(pc_post=post3, pc_category_id=Category.objects.get(category="Спорт").id)
+
+#6
+com1 = Comment.objects.create(c_post="интересная статья о здоровье", com_post_id=post2.pk, com_auth_id=User.objects.get(username="Второй пользователь").id) 
+com2 = Comment.objects.create(c_post="Сам себя хвалю", com_post_id=post2.pk, com_auth_id=User.objects.get(username="Третий пользователь").id)
+com3 = Comment.objects.create(c_post="Статья про науку и технику", com_post_id=post1.pk, com_auth_id=User.objects.get(username="Четвертый пользователь").id) 
+com4 = Comment.objects.create(c_post="Так это ж не статья! это НОВОСТЬ!!!", com_post_id=post3.pk, com_auth_id=User.objects.get(username="Первый пользователь").id)
+
+#7
+post1.like()
+post1.like()
+post1.like()
+post1.like()
+post1.like()
+post1.like()
+post1.like()
+post1.like()
+post1.dislike()
+post1.dislike()
+
+post2.like()
+post2.like()
+post2.like()
+post2.like()
+post2.like()
+post2.like()
+post2.dislike()
+post2.dislike()
+
+post3.like()
+post3.like()
+post3.like()
+post3.like()
+post3.dislike()
+post3.dislike()
+
+
+com1.like()
+com1.like()
+com1.dislike()
+
+com2.like()
+com2.like()
+com2.like()
+com2.dislike()
+
+com3.like()
+com3.like()
+com3.like()
+com3.like()
+com3.dislike()
+
+com4.like()
+com4.like()
+com4.like()
+com4.like()
+com4.like()
+com4.dislike()
+
+#8
+aut1.update_rate()
+aut2.update_rate()
+
+#9
+Author.objects.order_by('-rate_user').values('a_username__username','rate_user')[:1]  
+
+#10
+Post.objects.order_by('-p_rate').values('p_create_date','p_author__a_username__username','p_rate','p_name')[:1]
+st=Post.objects.order_by('-p_rate')[:1]
+st.values('p_create_date','p_author__a_username__username','p_rate','p_name')
+
+st=Post.objects.order_by('-p_rate')[:1].get()
+st.best()
+
+#11
+Comment.objects.filter(com_post_id=st.id).all().values('c_create_date','com_auth','c_rate','c_post') 
+
+
+
+
+ 
+ 
